@@ -1,0 +1,17 @@
+[package]
+version = "1.0.0"
+edition = "2021"
+name = "cybergarage"
+authors = ["Satoshi Konno <skonno@cybergarage.org>"]
+homepage = "http://www.cybergarage.org/"
+repository = "https://github.com/cybergarage/cybergarage-rs"
+license = "Apache-2.0"
+# license-file = "LICENSE"
+description = "Rust cargo package of cybergarage.org"
+categories = ["network-programming"]
+keywords = []
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4"
