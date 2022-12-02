@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! A Rust common cargo package for cybergarage.org crates.
+
 /// Encoding function module.
 pub mod encoding;
 /// Logger function module.
