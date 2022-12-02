@@ -2,9 +2,9 @@ name: cargo-test
 
 on:
   push:
-    branches: [ master ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ master ]
+    branches: [ "main" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Build
       run: pushd cybergarage && cargo build --verbose && popd
     - name: Run tests
-      run: pushd cybergarage && cargo test --verbose -- --test-threads=1 && popd
+      run: pushd cybergarage && cargo test --verbose && popd
