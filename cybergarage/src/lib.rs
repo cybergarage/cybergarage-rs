@@ -18,3 +18,5 @@
 pub mod encoding;
 /// Logger function module.
 pub mod log;
+/// Network function module.
+pub mod net;
