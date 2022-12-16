@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::protocol::Message;
-use crate::transport::observer::ObserverObject;
+use crate::net::observer::ObserverObject;
+use crate::net::packet::Packet;
 
 pub type Observers = Vec<ObserverObject>;
 
-/// NotifytManager notifies recieved transport messages to the observers.
+/// NotifytManager notifies recieved transport Packets to the observers.
 pub struct NotifytManager {
     observers: Observers,
 }
@@ -45,10 +45,10 @@ impl NotifytManager {
         return &self.observers;
     }
 
-    pub fn notify(&mut self, msg: &Message) -> bool {
+    pub fn notify(&mut self, msg: &Packet) -> bool {
         for observer in self.observers.iter() {
             let mut observer = observer.lock().unwrap();
-            observer.message_received(msg);
+            observer.Packet_received(msg);
         }
         true
     }

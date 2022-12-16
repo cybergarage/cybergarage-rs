@@ -15,7 +15,7 @@
 #[cfg(test)]
 mod tests {
 
-    use crate::transport::Manager;
+    use crate::net::Manager;
 
     #[test]
     fn manager() {

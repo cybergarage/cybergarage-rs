@@ -14,10 +14,10 @@
 
 use std::net::{IpAddr, SocketAddr};
 
-use crate::protocol::Message;
-use crate::transport::multicast_manager::MulticastManager;
-use crate::transport::observer::ObserverObject;
-use crate::transport::unicast_manager::UnicastManager;
+use crate::net::multicast_manager::MulticastManager;
+use crate::net::observer::ObserverObject;
+use crate::net::packet::Packet;
+use crate::net::unicast_manager::UnicastManager;
 
 /// Manager handles all messaging packet between ECHONET-Lite nodes.
 pub struct Manager {
@@ -43,11 +43,11 @@ impl Manager {
         true
     }
 
-    pub fn send(&self, to_addr: SocketAddr, msg: &Message) -> bool {
+    pub fn send(&self, to_addr: SocketAddr, msg: &Packet) -> bool {
         self.ucast_mgr.send(to_addr, msg)
     }
 
-    pub fn notify(&self, msg: &Message) -> bool {
+    pub fn notify(&self, msg: &Packet) -> bool {
         self.mcast_mgr.notify(msg)
     }
 

@@ -15,7 +15,7 @@
 #[cfg(test)]
 mod tests {
 
-    use crate::transport::interface::*;
+    use crate::net::interface::*;
 
     #[test]
     fn v4_interface() {

@@ -20,11 +20,11 @@ use std::net::{IpAddr, SocketAddr};
 use std::sync::{Arc, RwLock};
 use std::thread;
 
-use crate::protocol::Message;
-use crate::transport::default::*;
-use crate::transport::notifier::*;
-use crate::transport::observer::ObserverObject;
-use crate::transport::udp_socket::UdpSocket;
+use crate::net::default::*;
+use crate::net::notifier::*;
+use crate::net::observer::ObserverObject;
+use crate::net::packet::Packet;
+use crate::net::udp_socket::UdpSocket;
 
 pub struct UnicastServer {
     socket: Arc<RwLock<UdpSocket>>,
@@ -43,7 +43,7 @@ impl UnicastServer {
         self.notifier.lock().unwrap().add_observer(observer)
     }
 
-    pub fn send(&self, to_addr: SocketAddr, msg: &Message) -> bool {
+    pub fn send(&self, to_addr: SocketAddr, msg: &Packet) -> bool {
         let msg_bytes = msg.bytes();
         let addr = to_addr.ip();
         let port = to_addr.port();
@@ -61,7 +61,7 @@ impl UnicastServer {
             .send_to(&msg_bytes, to_addr)
             .is_err()
         {
-            warn!("Couldn't send message to {} {}", addr, port);
+            warn!("Couldn't send Packet to {} {}", addr, port);
             return false;
         }
         true
@@ -100,16 +100,7 @@ impl UnicastServer {
                 match &recv_res {
                     Ok((n_bytes, remote_addr)) => {
                         let recv_msg = &buf[0..*n_bytes];
-                        let mut msg = Message::new();
-                        if !msg.parse(recv_msg) {
-                            warn!(
-                                "Couldn't parse message {} [{}] {}",
-                                remote_addr.ip(),
-                                n_bytes,
-                                hex::encode_upper(recv_msg)
-                            );
-                            continue;
-                        }
+                        let mut msg = Packet::with(recv_msg.to_vec());
                         info!(
                             "RECV {} -> {} ({})",
                             remote_addr.ip(),

@@ -14,10 +14,10 @@
 
 use std::net::IpAddr;
 
-use crate::protocol::Message;
-use crate::transport::interface::*;
-use crate::transport::multicast_server::MulticastServer;
-use crate::transport::observer::ObserverObject;
+use crate::net::interface::*;
+use crate::net::multicast_server::MulticastServer;
+use crate::net::observer::ObserverObject;
+use crate::net::packet::Packet;
 
 pub struct MulticastManager {
     mcast_servers: Vec<MulticastServer>,
@@ -39,7 +39,7 @@ impl MulticastManager {
         true
     }
 
-    pub fn notify(&self, msg: &Message) -> bool {
+    pub fn notify(&self, msg: &Packet) -> bool {
         for mcast_server in self.mcast_servers.iter() {
             if !mcast_server.notify(msg) {
                 return false;

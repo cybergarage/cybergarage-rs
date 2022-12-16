@@ -15,9 +15,9 @@
 use std::sync::Arc;
 use std::sync::Mutex;
 
-use crate::transport::notify_manager::NotifytManager;
+use crate::net::notify_manager::NotifytManager;
 
-/// Notifier notifies recieved transport messages to the observers.
+/// Notifier notifies recieved transport Packets to the observers.
 pub type Notifier = Arc<Mutex<NotifytManager>>;
 
 pub fn notifier_new() -> Notifier {

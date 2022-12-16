@@ -15,11 +15,11 @@
 use std::sync::Arc;
 use std::sync::Mutex;
 
-use crate::protocol::Message;
+use crate::net::packet::Packet;
 
 /// Observer defines a messaging packet interface between ECHONET-Lite nodes.
 pub trait Observer {
-    fn message_received(&mut self, msg: &Message);
+    fn Packet_received(&mut self, msg: &Packet);
 }
 
 pub type ObserverObject = Arc<Mutex<dyn Observer + Send>>;

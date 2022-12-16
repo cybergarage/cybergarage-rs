@@ -26,6 +26,7 @@ mod multicast_server;
 mod notifier;
 mod notify_manager;
 mod observer;
+mod packet;
 mod result;
 mod udp_socket;
 mod unicast_manager;

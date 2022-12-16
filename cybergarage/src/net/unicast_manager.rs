@@ -14,10 +14,10 @@
 
 use std::net::{IpAddr, SocketAddr};
 
-use crate::protocol::Message;
-use crate::transport::interface::*;
-use crate::transport::observer::ObserverObject;
-use crate::transport::unicast_server::UnicastServer;
+use crate::net::interface::*;
+use crate::net::observer::ObserverObject;
+use crate::net::packet::Packet;
+use crate::net::unicast_server::UnicastServer;
 
 pub struct UnicastManager {
     udp_servers: Vec<UnicastServer>,
@@ -39,7 +39,7 @@ impl UnicastManager {
         true
     }
 
-    pub fn send(&self, to_addr: SocketAddr, msg: &Message) -> bool {
+    pub fn send(&self, to_addr: SocketAddr, msg: &Packet) -> bool {
         for udp_server in self.udp_servers.iter() {
             if udp_server.send(to_addr, msg) {
                 return true;

@@ -15,7 +15,7 @@
 #[cfg(test)]
 mod tests {
 
-    use crate::transport::unicast_manager::*;
+    use crate::net::unicast_manager::*;
 
     #[test]
     fn unicast_manager() {

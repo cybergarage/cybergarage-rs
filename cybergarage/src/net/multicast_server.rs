@@ -20,11 +20,11 @@ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::sync::{Arc, RwLock};
 use std::thread;
 
-use crate::protocol::Message;
-use crate::transport::default::*;
-use crate::transport::notifier::*;
-use crate::transport::observer::ObserverObject;
-use crate::transport::udp_socket::UdpSocket;
+use crate::net::default::*;
+use crate::net::notifier::*;
+use crate::net::observer::ObserverObject;
+use crate::net::packet::Packet;
+use crate::net::udp_socket::UdpSocket;
 
 pub struct MulticastServer {
     socket: Arc<RwLock<UdpSocket>>,
@@ -43,7 +43,7 @@ impl MulticastServer {
         self.notifier.lock().unwrap().add_observer(observer)
     }
 
-    pub fn notify(&self, msg: &Message) -> bool {
+    pub fn notify(&self, msg: &Packet) -> bool {
         let to_addr_str = format!("{}:{}", MULTICAST_V4_ADDRESS, PORT);
         let to_addr: SocketAddr = to_addr_str.parse().unwrap();
         let msg_bytes = msg.bytes();
@@ -63,7 +63,7 @@ impl MulticastServer {
             .send_to(&msg_bytes, to_addr)
             .is_err()
         {
-            warn!("Couldn't notify message to {} {}", addr, port);
+            warn!("Couldn't notify Packet to {} {}", addr, port);
             return false;
         }
         true
@@ -134,16 +134,7 @@ impl MulticastServer {
                 match &recv_res {
                     Ok((n_bytes, remote_addr)) => {
                         let recv_msg = &buf[0..*n_bytes];
-                        let mut msg = Message::new();
-                        if !msg.parse(recv_msg) {
-                            warn!(
-                                "Couldn't parse message {} [{}] {}",
-                                remote_addr,
-                                n_bytes,
-                                hex::encode_upper(recv_msg)
-                            );
-                            continue;
-                        }
+                        let mut msg = Packet::with(recv_msg.to_vec());
                         info!(
                             "RECV {} -> {} ({})",
                             remote_addr,

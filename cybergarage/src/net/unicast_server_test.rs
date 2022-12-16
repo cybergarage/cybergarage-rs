@@ -20,13 +20,13 @@ mod tests {
     use std::thread;
     use std::time;
 
-    use crate::protocol::Message;
-    use crate::protocol::ESV;
-    use crate::transport::interface::*;
-    use crate::transport::unicast_server::*;
+    use crate::net::interface::*;
+    use crate::net::packet::Packet;
+    use crate::net::unicast_server::*;
+    use crate::net::ESV;
 
     use crate::log::Logger;
-    use crate::transport::notify_manager_test::*;
+    use crate::net::notify_manager_test::*;
 
     #[test]
     fn unicast_server() {
@@ -45,7 +45,7 @@ mod tests {
             assert!(server.start());
             thread::sleep(time::Duration::from_secs(5));
 
-            let mut msg = Message::new();
+            let mut msg = Packet::new();
             msg.set_esv(ESV::ReadRequest);
             for _ in 0..TEST_OBSERVER_COUNT {
                 let server_addr = server.ifaddr();

@@ -15,7 +15,7 @@
 #[cfg(test)]
 mod tests {
 
-    use crate::transport::multicast_manager::*;
+    use crate::net::multicast_manager::*;
 
     #[test]
     fn multicast_manager() {
