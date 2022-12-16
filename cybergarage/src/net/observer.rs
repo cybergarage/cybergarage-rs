@@ -19,7 +19,7 @@ use crate::net::packet::Packet;
 
 /// Observer defines a messaging packet interface between ECHONET-Lite nodes.
 pub trait Observer {
-    fn Packet_received(&mut self, msg: &Packet);
+    fn packet_received(&mut self, msg: &Packet);
 }
 
 pub type ObserverObject = Arc<Mutex<dyn Observer + Send>>;

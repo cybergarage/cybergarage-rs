@@ -31,7 +31,7 @@ impl TestNotifyCounter {
 }
 
 impl Observer for TestNotifyCounter {
-    fn Packet_received(&mut self, _msg: &Packet) {
+    fn packet_received(&mut self, _msg: &Packet) {
         let mut counter = self.counter.lock().unwrap();
         *counter += 1;
     }

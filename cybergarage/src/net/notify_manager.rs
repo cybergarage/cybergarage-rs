@@ -29,14 +29,6 @@ impl NotifytManager {
         }
     }
     pub fn add_observer(&mut self, observer: ObserverObject) -> bool {
-        // FIXME: FIX not to register the same observer
-        // for reg_observer in self.observers().iter() {
-        //     let new_observer = observer.lock().unwrap();
-        //     let observer = reg_observer.lock().unwrap();
-        //     if ::core::ptr::eq(&new_observer, &observer) {
-        //         return true;
-        //     }
-        // }
         self.observers.push(observer);
         true
     }
@@ -48,7 +40,7 @@ impl NotifytManager {
     pub fn notify(&mut self, msg: &Packet) -> bool {
         for observer in self.observers.iter() {
             let mut observer = observer.lock().unwrap();
-            observer.Packet_received(msg);
+            observer.packet_received(msg);
         }
         true
     }
