@@ -16,3 +16,7 @@ keywords = []
 [dependencies]
 log = "0.4"
 chrono = "0.4"
+nix = "0.25.0" 
+net2 = "0.2"
+hex = "0.4"
+pnet = "0.28.0"
