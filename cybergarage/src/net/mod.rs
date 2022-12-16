@@ -13,14 +13,14 @@
 // limitations under the License.
 
 pub use self::default::PORT;
-pub use self::manager::Manager;
+pub use self::multicast_manager::MulticastManager;
 pub use self::notify_manager::NotifytManager;
 pub use self::observer::{Observer, ObserverObject};
+pub use self::unicast_manager::UnicastManager;
 
 mod default;
 mod error;
 mod interface;
-mod manager;
 mod multicast_manager;
 mod multicast_server;
 mod notifier;
@@ -33,7 +33,6 @@ mod unicast_manager;
 mod unicast_server;
 
 mod interface_test;
-mod manager_test;
 mod multicast_manager_test;
 mod multicast_server_test;
 mod notify_manager_test;
