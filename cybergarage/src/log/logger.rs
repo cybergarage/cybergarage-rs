@@ -19,14 +19,14 @@ use log::{LevelFilter, Metadata, Record};
 
 static INIT: Once = Once::new();
 
-static LOGGER: sharedDefaultLogger = DefaultLogger {
-    level: LevelFilter::Trace,
-};
-
 /// DefaultLogger represents a default logger instance.
 pub struct DefaultLogger {
     level: LevelFilter,
 }
+
+static LOGGER: DefaultLogger = DefaultLogger {
+    level: LevelFilter::Trace,
+};
 
 impl DefaultLogger {
     pub fn init() {
@@ -37,9 +37,7 @@ impl DefaultLogger {
         });
     }
 
-    pub fn set_level(l: LevelFilter) {
-        sharedDefaultLogger(l);
-    }
+    pub fn set_level(_l: LevelFilter) {}
 }
 
 impl log::Log for DefaultLogger {
