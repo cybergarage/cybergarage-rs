@@ -23,15 +23,14 @@ mod tests {
     use crate::net::interface::*;
     use crate::net::packet::Packet;
     use crate::net::unicast_server::*;
-    use crate::net::ESV;
 
-    use crate::log::Logger;
+    use crate::log::DefaultLogger;
     use crate::net::notify_manager_test::*;
 
     #[test]
     fn unicast_server() {
         fn test_udp_server(ifaddr: IpAddr) {
-            Logger::init();
+            DefaultLogger::init();
 
             const TEST_OBSERVER_COUNT: i32 = 5;
             let counter = Arc::new(Mutex::new(0));
@@ -45,12 +44,12 @@ mod tests {
             assert!(server.start());
             thread::sleep(time::Duration::from_secs(5));
 
-            let mut msg = Packet::new();
-            msg.set_esv(ESV::ReadRequest);
+            let mut pkt = Packet::new();
+            pkt.set_bytes(vec![0 as u8; 1]);
             for _ in 0..TEST_OBSERVER_COUNT {
                 let server_addr = server.ifaddr();
                 assert!(server_addr.is_ok());
-                assert!(server.send(server_addr.unwrap(), &msg));
+                assert!(server.send(server_addr.unwrap(), &pkt));
                 thread::sleep(time::Duration::from_secs(1));
             }
 
