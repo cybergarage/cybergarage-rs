@@ -49,8 +49,8 @@ impl Packet {
         self.data = data.clone();
     }
 
-    pub fn bytes(&self) -> Vec<u8> {
-        self.data
+    pub fn bytes(&self) -> &Vec<u8> {
+        &self.data
     }
 }
 
