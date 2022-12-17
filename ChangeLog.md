@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.1.1 (2022-12-17)
+- Update Logger
+
 ## v1.1.0 (2022-12-17)
 - Add UnicastManager and MulticastManager
 
