@@ -25,13 +25,13 @@ mod tests {
     use crate::net::packet::Packet;
     use crate::net::unicast_server::*;
 
-    use crate::log::DefaultLogger;
+    use crate::log::Logger;
     use crate::net::notify_manager_test::*;
 
     #[test]
     fn unicast_server() {
         fn test_udp_server(ifaddr: IpAddr) {
-            DefaultLogger::init();
+            Logger::init();
 
             const TEST_OBSERVER_COUNT: i32 = 5;
             let counter = Arc::new(Mutex::new(0));

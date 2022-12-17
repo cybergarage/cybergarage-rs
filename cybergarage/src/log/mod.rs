@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::logger::DefaultLogger;
+pub use self::logger::Logger;
 
 mod logger;
 mod logger_test;

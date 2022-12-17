@@ -19,23 +19,23 @@ use log::{LevelFilter, Metadata, Record};
 
 static INIT: Once = Once::new();
 
-/// DefaultLogger represents a default logger instance.
-pub struct DefaultLogger {
+/// Logger represents a default logger instance.
+pub struct Logger {
     level: LevelFilter,
 }
 
-static LOGGER: DefaultLogger = DefaultLogger {
+static LOGGER: Logger = Logger {
     level: LevelFilter::Trace,
 };
 
-impl DefaultLogger {
-    pub fn new() -> DefaultLogger {
-        DefaultLogger {
+impl Logger {
+    pub fn new() -> Logger {
+        Logger {
             level: LevelFilter::Trace,
         }
     }
 
-    pub fn shared() -> &'static DefaultLogger {
+    pub fn shared() -> &'static Logger {
         &LOGGER
     }
 
@@ -52,7 +52,7 @@ impl DefaultLogger {
     }
 }
 
-impl log::Log for DefaultLogger {
+impl log::Log for Logger {
     fn enabled(&self, metadata: &Metadata) -> bool {
         metadata.level() <= self.level
     }
