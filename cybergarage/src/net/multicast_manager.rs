@@ -67,15 +67,37 @@ impl MulticastManager {
         false
     }
 
-    pub fn start(&mut self) -> bool {
+    pub fn start(&mut self, maddrs: &[IpAddr], port: u16) -> bool {
         if self.is_running() {
             return true;
         }
 
         for ifaddr in get_all_interfaces() {
             let mut mcast_server = MulticastServer::new();
-            if !mcast_server.bind(ifaddr) {
-                self.stop();
+            if ifaddr.is_ipv4() {
+                for maddr in maddrs {
+                    if maddr.is_ipv4() {
+                        if !mcast_server.bind(*maddr, port, ifaddr) {
+                            self.stop();
+                            return false;
+                        }
+                        break;
+                    }
+                }
+            } else if ifaddr.is_ipv6() {
+                for maddr in maddrs {
+                    if maddr.is_ipv6() {
+                        if !mcast_server.bind(*maddr, port, ifaddr) {
+                            self.stop();
+                            return false;
+                        }
+                        break;
+                    }
+                }
+            } else {
+                return false;
+            }
+            if !mcast_server.is_bound() {
                 return false;
             }
             if !mcast_server.start() {

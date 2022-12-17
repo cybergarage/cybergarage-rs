@@ -20,6 +20,7 @@ mod tests {
     use std::thread;
     use std::time;
 
+    use crate::net::default_test::*;
     use crate::net::interface::*;
     use crate::net::multicast_server::*;
     use crate::net::packet::Packet;
@@ -31,7 +32,6 @@ mod tests {
     fn multicast_server() {
         fn test_multicast_server(ifaddr: IpAddr) {
             DefaultLogger::init();
-
             const TEST_OBSERVER_COUNT: i32 = 5;
             let counter = Arc::new(Mutex::new(0));
 
@@ -40,7 +40,12 @@ mod tests {
             let observer = TestNotifyCounter::new(counter.clone());
             assert!(server.add_observer(Arc::new(Mutex::new(observer))));
 
-            assert!(server.bind(ifaddr));
+            if ifaddr.is_ipv4() {
+                assert!(server.bind(TEST_MULTICAST_V4_ADDRESS, TEST_PORT, ifaddr));
+            } else if ifaddr.is_ipv6() {
+                assert!(server.bind(TEST_MULTICAST_V6_ADDRESS, TEST_PORT, ifaddr));
+            }
+
             assert!(server.start());
             thread::sleep(time::Duration::from_secs(5));
 

@@ -29,6 +29,8 @@ use crate::net::udp_socket::UdpSocket;
 pub struct MulticastServer {
     socket: Arc<RwLock<UdpSocket>>,
     notifier: Notifier,
+    maddr: IpAddr,
+    port: u16,
 }
 
 impl MulticastServer {
@@ -36,6 +38,8 @@ impl MulticastServer {
         MulticastServer {
             socket: Arc::new(RwLock::new(UdpSocket::new())),
             notifier: notifier_new(),
+            maddr: std::net::IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)),
+            port: 0,
         }
     }
 
@@ -44,14 +48,14 @@ impl MulticastServer {
     }
 
     pub fn notify(&self, msg: &Packet) -> bool {
-        let to_addr_str = format!("{}:{}", MULTICAST_V4_ADDRESS, PORT);
+        let to_addr_str = format!("{}:{}", self.maddr, self.port);
         let to_addr: SocketAddr = to_addr_str.parse().unwrap();
         let msg_bytes = msg.bytes();
         let addr = to_addr.ip();
         let port = to_addr.port();
         info!(
             "MCST {} -> {}:{} ({})",
-            self.socket.read().unwrap().local_addr().unwrap(),
+            self.socket.read().unwrap().addr().unwrap(),
             addr,
             port,
             msg,
@@ -70,52 +74,64 @@ impl MulticastServer {
     }
 
     pub fn ifaddr(&self) -> io::Result<SocketAddr> {
-        self.socket.read().unwrap().local_addr()
+        self.socket.read().unwrap().addr()
     }
 
-    pub fn bind(&mut self, ifaddr: IpAddr) -> bool {
-        let mut addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)), PORT);
+    pub fn is_bound(&self) -> bool {
+        self.socket.read().unwrap().addr().is_ok()
+    }
+
+    pub fn bind(&mut self, maddr: IpAddr, port: u16, ifaddr: IpAddr) -> bool {
+        let mut addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)), port);
         if ifaddr.is_ipv6() {
-            addr = SocketAddr::new(IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0)), PORT);
+            addr = SocketAddr::new(IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0)), port);
         }
         debug!("BIND MCT {}", addr);
         if self.socket.write().unwrap().bind(addr).is_err() {
             return false;
         }
         match ifaddr {
-            IpAddr::V4(ip4) => {
-                if self
-                    .socket
-                    .write()
-                    .unwrap()
-                    .join_multicast_v4(&MULTICAST_V4_ADDRESS, &ip4)
-                    .is_err()
-                {
-                    self.close();
+            IpAddr::V4(ifaddr_v4) => match maddr {
+                IpAddr::V4(maddr_v4) => {
+                    if self
+                        .socket
+                        .write()
+                        .unwrap()
+                        .join_multicast_v4(&maddr_v4, &ifaddr_v4)
+                        .is_err()
+                    {
+                        self.close();
+                        return false;
+                    }
+                    debug!("BIND MCT {}:{} -> {}:{}", ifaddr, port, maddr_v4, ifaddr_v4);
+                }
+                IpAddr::V6(maddr_v6) => {
+                    error!("BIND MCT {}:{} -> {}:{}", ifaddr, port, maddr_v6, ifaddr_v4);
                     return false;
                 }
-                debug!(
-                    "BIND MCT {}:{} -> {}:{}",
-                    ifaddr, PORT, MULTICAST_V4_ADDRESS, ip4
-                );
-            }
-            IpAddr::V6(ip6) => {
-                if self
-                    .socket
-                    .write()
-                    .unwrap()
-                    .join_multicast_v6(&MULTICAST_V6_ADDRESS, &ip6)
-                    .is_err()
-                {
-                    self.close();
+            },
+            IpAddr::V6(ifaddr_v6) => match maddr {
+                IpAddr::V4(maddr_v4) => {
+                    error!("BIND MCT {}:{} -> {}:{}", ifaddr, port, maddr_v4, ifaddr_v6);
                     return false;
                 }
-                debug!(
-                    "BIND MCT {}:{} -> {}:{}",
-                    ifaddr, PORT, MULTICAST_V6_ADDRESS, ip6
-                );
-            }
+                IpAddr::V6(maddr_v6) => {
+                    if self
+                        .socket
+                        .write()
+                        .unwrap()
+                        .join_multicast_v6(&maddr_v6, &ifaddr_v6)
+                        .is_err()
+                    {
+                        self.close();
+                        return false;
+                    }
+                    debug!("BIND MCT {}:{} -> {}:{}", ifaddr, port, maddr_v6, ifaddr_v6);
+                }
+            },
         }
+        self.maddr = maddr;
+        self.port = port;
         true
     }
 
@@ -138,7 +154,7 @@ impl MulticastServer {
                         info!(
                             "RECV {} -> {} ({})",
                             remote_addr,
-                            socket.read().unwrap().local_addr().ok().unwrap(),
+                            socket.read().unwrap().addr().ok().unwrap(),
                             msg
                         );
                         msg.set_from(remote_addr.clone());
@@ -147,7 +163,7 @@ impl MulticastServer {
                     Err(e) => {
                         warn!(
                             "RECV {} ({})",
-                            socket.read().unwrap().local_addr().ok().unwrap(),
+                            socket.read().unwrap().addr().ok().unwrap(),
                             e
                         );
                         break;

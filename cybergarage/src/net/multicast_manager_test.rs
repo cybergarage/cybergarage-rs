@@ -15,12 +15,14 @@
 #[cfg(test)]
 mod tests {
 
+    use crate::net::default_test::*;
     use crate::net::multicast_manager::*;
 
     #[test]
     fn multicast_manager() {
+        let maddrs = vec![TEST_MULTICAST_V4_ADDRESS, TEST_MULTICAST_V6_ADDRESS];
         let mut mgr = MulticastManager::new();
-        assert!(mgr.start());
+        assert!(mgr.start(&maddrs, TEST_PORT));
         assert!(mgr.stop());
     }
 }
