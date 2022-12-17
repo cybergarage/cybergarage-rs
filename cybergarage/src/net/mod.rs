@@ -34,6 +34,7 @@ mod udp_socket;
 mod unicast_manager;
 mod unicast_server;
 
+mod default_test;
 mod interface_test;
 mod multicast_manager_test;
 mod multicast_server_test;
