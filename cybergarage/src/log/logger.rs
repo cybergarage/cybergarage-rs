@@ -39,6 +39,10 @@ impl DefaultLogger {
         &LOGGER
     }
 
+    pub fn set_level(&mut self, l: LevelFilter) {
+        self.level = l;
+    }
+
     pub fn init() {
         INIT.call_once(|| {
             log::set_logger(&LOGGER)

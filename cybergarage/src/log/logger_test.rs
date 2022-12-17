@@ -17,11 +17,11 @@ mod tests {
 
     use log::*;
 
-    // use crate::DefaultLogger;
+    use crate::log::DefaultLogger;
 
     #[test]
     fn logger() {
-        // DefaultLogger::init();
+        DefaultLogger::init();
         error!("");
         warn!("");
         info!("");
