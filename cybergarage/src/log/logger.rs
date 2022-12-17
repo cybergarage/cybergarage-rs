@@ -46,8 +46,6 @@ impl DefaultLogger {
                 .expect("Couldn't initialize logger");
         });
     }
-
-    pub fn set_level(_l: LevelFilter) {}
 }
 
 impl log::Log for DefaultLogger {
