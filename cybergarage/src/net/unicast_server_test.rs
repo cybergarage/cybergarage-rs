@@ -20,6 +20,7 @@ mod tests {
     use std::thread;
     use std::time;
 
+    use crate::net::default_test::*;
     use crate::net::interface::*;
     use crate::net::packet::Packet;
     use crate::net::unicast_server::*;
@@ -40,7 +41,7 @@ mod tests {
             let observer = TestNotifyCounter::new(counter.clone());
             assert!(server.add_observer(Arc::new(Mutex::new(observer))));
 
-            assert!(server.bind(ifaddr));
+            assert!(server.bind(ifaddr, TEST_PORT));
             assert!(server.start());
             thread::sleep(time::Duration::from_secs(5));
 

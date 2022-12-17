@@ -49,7 +49,7 @@ impl UnicastServer {
         let port = to_addr.port();
         info!(
             "SEND {} -> {}:{} ({})",
-            self.socket.read().unwrap().local_addr().unwrap(),
+            self.socket.read().unwrap().addr().unwrap(),
             addr,
             port,
             msg,
@@ -68,13 +68,13 @@ impl UnicastServer {
     }
 
     pub fn ifaddr(&self) -> io::Result<SocketAddr> {
-        self.socket.read().unwrap().local_addr()
+        self.socket.read().unwrap().addr()
     }
 
-    pub fn bind(&mut self, ifaddr: IpAddr) -> bool {
-        let addr = format!("{}:{}", ifaddr, PORT).parse();
+    pub fn bind(&mut self, ifaddr: IpAddr, port: u16) -> bool {
+        let addr = format!("{}:{}", ifaddr, port).parse();
         if addr.is_err() {
-            error!("bind {} {}", ifaddr, PORT);
+            error!("bind {} {}", ifaddr, port);
             return false;
         }
         let addr: SocketAddr = addr.unwrap();
@@ -104,7 +104,7 @@ impl UnicastServer {
                         info!(
                             "RECV {} -> {} ({})",
                             remote_addr.ip(),
-                            socket.read().unwrap().local_addr().ok().unwrap(),
+                            socket.read().unwrap().addr().ok().unwrap(),
                             msg
                         );
                         msg.set_from(remote_addr.clone());
@@ -113,7 +113,7 @@ impl UnicastServer {
                     Err(e) => {
                         warn!(
                             "RECV {} ({})",
-                            socket.read().unwrap().local_addr().ok().unwrap(),
+                            socket.read().unwrap().addr().ok().unwrap(),
                             e
                         );
                         break;
