@@ -16,7 +16,6 @@
 // use nix::sys::socket::sockopt::{IpMulticastLoop, ReuseAddr, ReusePort};
 use crate::net::error::{BindError, ScoketError};
 use crate::net::result::Result;
-use crate::net::PORT;
 use log::warn;
 use nix::sys::socket::{shutdown, Shutdown};
 use nix::unistd::close;
@@ -27,7 +26,7 @@ use std::{thread, time};
 
 pub struct UdpSocket {
     sock: Option<std::net::UdpSocket>,
-    ifaddr: Option<SocketAddr>,
+    addr: Option<SocketAddr>,
 }
 
 fn create_socket_v4(ifaddr: SocketAddr) -> io::Result<std::net::UdpSocket> {
@@ -48,19 +47,20 @@ impl UdpSocket {
     pub fn new() -> UdpSocket {
         UdpSocket {
             sock: None,
-            ifaddr: None,
+            addr: None,
         }
     }
 
-    pub fn local_addr(&self) -> io::Result<SocketAddr> {
-        if self.ifaddr.is_some() {
-            return Ok(self.ifaddr.unwrap());
+    pub fn addr(&self) -> io::Result<SocketAddr> {
+        if self.addr.is_some() {
+            return Ok(self.addr.unwrap());
         }
         Err(std::io::Error::new(
             std::io::ErrorKind::Other,
             "socket is not bound",
         ))
     }
+
     pub fn bind(&mut self, ifaddr: SocketAddr) -> Result<()> {
         if self.sock.is_some() {
             self.close();
@@ -99,7 +99,7 @@ impl UdpSocket {
         }
 
         self.sock = sock;
-        self.ifaddr = Some(ifaddr);
+        self.addr = Some(ifaddr);
         Ok(())
     }
 
@@ -141,7 +141,11 @@ impl UdpSocket {
         if self.sock.is_none() {
             return Err(BindError::new());
         }
-        self.ifaddr = Some(format!("{}:{}", ifaddr, PORT).parse().unwrap());
+        self.addr = Some(
+            format!("{}:{}", ifaddr, self.addr.unwrap().port())
+                .parse()
+                .unwrap(),
+        );
         self.sock
             .as_ref()
             .unwrap()
@@ -152,7 +156,11 @@ impl UdpSocket {
         if self.sock.is_none() {
             return Err(BindError::new());
         }
-        self.ifaddr = Some(format!("{}:{}", ifaddr, PORT).parse().unwrap());
+        self.addr = Some(
+            format!("{}:{}", ifaddr, self.addr.unwrap().port())
+                .parse()
+                .unwrap(),
+        );
         self.sock.as_ref().unwrap().join_multicast_v6(multiaddr, 0)
     }
 }
