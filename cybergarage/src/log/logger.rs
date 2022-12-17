@@ -29,6 +29,16 @@ static LOGGER: DefaultLogger = DefaultLogger {
 };
 
 impl DefaultLogger {
+    pub fn new() -> DefaultLogger {
+        DefaultLogger {
+            level: LevelFilter::Trace,
+        }
+    }
+
+    pub fn shared() -> &'static DefaultLogger {
+        &LOGGER
+    }
+
     pub fn init() {
         INIT.call_once(|| {
             log::set_logger(&LOGGER)
