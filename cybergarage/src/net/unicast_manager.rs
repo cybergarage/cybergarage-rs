@@ -67,14 +67,14 @@ impl UnicastManager {
         false
     }
 
-    pub fn start(&mut self) -> bool {
+    pub fn start(&mut self, port: u16) -> bool {
         if self.is_running() {
             return true;
         }
 
         for ifaddr in get_all_interfaces() {
             let mut udp_server = UnicastServer::new();
-            if !udp_server.bind(ifaddr) {
+            if !udp_server.bind(ifaddr, port) {
                 self.stop();
                 return false;
             }

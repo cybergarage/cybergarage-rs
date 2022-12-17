@@ -15,12 +15,13 @@
 #[cfg(test)]
 mod tests {
 
+    use crate::net::default_test::*;
     use crate::net::unicast_manager::*;
 
     #[test]
     fn unicast_manager() {
         let mut mgr = UnicastManager::new();
-        assert!(mgr.start());
+        assert!(mgr.start(TEST_PORT));
         assert!(mgr.stop());
     }
 }
