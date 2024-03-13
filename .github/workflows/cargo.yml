@@ -19,4 +19,4 @@ jobs:
     - name: Build
       run: pushd cybergarage && cargo build --verbose && popd
     - name: Run tests
-      run: pushd cybergarage && cargo test --verbose && popd
+      run: env RUST_BACKTRACE=1 pushd cybergarage && cargo test --verbose && popd
