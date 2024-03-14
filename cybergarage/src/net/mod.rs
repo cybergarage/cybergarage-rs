@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+pub use self::error::{BindError, ScoketError};
 pub use self::multicast_manager::MulticastManager;
 pub use self::multicast_server::MulticastServer;
 pub use self::notify_manager::NotifytManager;
 pub use self::observer::{Observer, ObserverObject};
+pub use self::packet::Packet;
 pub use self::udp_socket::UdpSocket;
 pub use self::unicast_manager::UnicastManager;
 pub use self::unicast_server::UnicastServer;
