@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.1.2 (20XX-XX-XX)
+- Add hexdump logger functions
+
 ## v1.1.1 (2022-12-17)
 - Update Logger
 - Add func!() macro
