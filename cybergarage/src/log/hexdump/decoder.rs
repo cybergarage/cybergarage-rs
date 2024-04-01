@@ -16,4 +16,6 @@ pub struct Decoder {}
 
 impl Decoder {
     pub fn from_bytes(bytes: &mut [u8]) {}
+    pub fn from_str(s: &str) {}
+    pub fn from_lines(lines: &Vec<&str>) {}
 }
