@@ -13,6 +13,8 @@
 // limitations under the License.
 
 pub use self::bytes::*;
+pub use self::error::*;
 
 mod bytes;
 mod bytes_test;
+mod error;
