@@ -37,14 +37,6 @@ impl Bytes {
         val
     }
 
-    pub fn from_hexbytes(bytes: &[u8]) -> Result<Vec<u8>, Error> {
-        let mut hex_str = String::new();
-        for byte in bytes {
-            hex_str.push_str(&format!("{:02X}", byte));
-        }
-        return Bytes::from_hexstring(&hex_str);
-    }
-
     pub fn from_hexstr(hex_str: &str) -> Result<Vec<u8>, Error> {
         let mut hex_bytes = Vec::new();
         for n in 0..hex_str.len() / 2 {
@@ -55,6 +47,10 @@ impl Bytes {
             }
         }
         Ok(hex_bytes)
+    }
+
+    pub fn from_hexbytes(bytes: &[u8]) -> Result<Vec<u8>, Error> {
+        Bytes::from_hexstr(std::str::from_utf8(bytes).unwrap())
     }
 
     pub fn from_hexstring(hex_str: &String) -> Result<Vec<u8>, Error> {
