@@ -45,7 +45,7 @@ impl Bytes {
         return Bytes::from_hexstring(&hex_str);
     }
 
-    pub fn from_hexstring(hex_str: &String) -> Result<Vec<u8>, Error> {
+    pub fn from_hexstr(hex_str: &str) -> Result<Vec<u8>, Error> {
         let mut hex_bytes = Vec::new();
         for n in 0..hex_str.len() / 2 {
             let hex_byte = &hex_str[n * 2..n * 2 + 2];
@@ -55,5 +55,9 @@ impl Bytes {
             }
         }
         Ok(hex_bytes)
+    }
+
+    pub fn from_hexstring(hex_str: &String) -> Result<Vec<u8>, Error> {
+        Bytes::from_hexstr(hex_str.as_str())
     }
 }
