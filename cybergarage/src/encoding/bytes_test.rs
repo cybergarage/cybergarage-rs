@@ -18,7 +18,7 @@ mod tests {
     use crate::encoding::bytes::*;
 
     #[test]
-    fn bytes_from() {
+    fn bytes_u32_from() {
         let mut buf: [u8; 1] = [0; 1];
         for n in 0..=0xFF {
             Bytes::from_u32(n, &mut buf);
@@ -41,6 +41,37 @@ mod tests {
         for n in (0..=0xFFFFFFFFu32).step_by(0xFFFFFFFF / 0xFF) {
             Bytes::from_u32(n, &mut buf);
             assert_eq!(n, Bytes::to_u32(&buf));
+        }
+    }
+
+    #[test]
+    fn bytes_hex_from() {
+        for n in 0..=0xFF {
+            let hex_str = format!("{:02X}", n);
+            let hex_bytes = Bytes::from_hexstr(&hex_str).unwrap();
+            let to_hex_str = Bytes::to_hexstring(&hex_bytes);
+            assert_eq!(hex_str, to_hex_str);
+        }
+
+        for n in (0..=0xFFFF).step_by(0xFFFF / 0xFF) {
+            let hex_str = format!("{:04X}", n);
+            let hex_bytes = Bytes::from_hexstr(&hex_str).unwrap();
+            let to_hex_str = Bytes::to_hexstring(&hex_bytes);
+            assert_eq!(hex_str, to_hex_str);
+        }
+
+        for n in (0..=0xFFFFFF).step_by(0xFFFFFF / 0xFF) {
+            let hex_str = format!("{:06X}", n);
+            let hex_bytes = Bytes::from_hexstr(&hex_str).unwrap();
+            let to_hex_str = Bytes::to_hexstring(&hex_bytes);
+            assert_eq!(hex_str, to_hex_str);
+        }
+
+        for n in (0..=0xFFFFFFFFu32).step_by(0xFFFFFFFF / 0xFF) {
+            let hex_str = format!("{:08X}", n);
+            let hex_bytes = Bytes::from_hexstr(&hex_str).unwrap();
+            let to_hex_str = Bytes::to_hexstring(&hex_bytes);
+            assert_eq!(hex_str, to_hex_str);
         }
     }
 }
