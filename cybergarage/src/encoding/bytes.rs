@@ -13,6 +13,9 @@
 // limitations under the License.
 
 /// Bytes offers encoding and decoding utility functions between byte array and integers.
+use std::io::Error;
+
+use crate::encoding::error::ParseError;
 pub struct Bytes {}
 
 impl Bytes {
@@ -23,6 +26,7 @@ impl Bytes {
             bytes[idx] = ((val >> (n * 8)) & 0xFF) as u8;
         }
     }
+
     pub fn to_u32(bytes: &[u8]) -> u32 {
         let mut val = 0 as u32;
         let bytes_size = bytes.len();
@@ -31,5 +35,25 @@ impl Bytes {
             val += (bytes[idx] as u32) << (n * 8);
         }
         val
+    }
+
+    pub fn from_hexbytes(bytes: &[u8]) -> Result<Vec<u8>, Error> {
+        let mut hex_str = String::new();
+        for byte in bytes {
+            hex_str.push_str(&format!("{:02X}", byte));
+        }
+        return Bytes::from_hexstring(&hex_str);
+    }
+
+    pub fn from_hexstring(hex_str: &String) -> Result<Vec<u8>, Error> {
+        let mut hex_bytes = Vec::new();
+        for n in 0..hex_str.len() / 2 {
+            let hex_byte = &hex_str[n * 2..n * 2 + 2];
+            match u8::from_str_radix(hex_byte, 16) {
+                Ok(val) => hex_bytes.push(val),
+                Err(e) => return Err(ParseError::new(e.to_string().as_str())),
+            }
+        }
+        Ok(hex_bytes)
     }
 }
