@@ -56,4 +56,12 @@ impl Bytes {
     pub fn from_hexstring(hex_str: &String) -> Result<Vec<u8>, Error> {
         Bytes::from_hexstr(hex_str.as_str())
     }
+
+    pub fn to_hexstring(bytes: &[u8]) -> String {
+        let mut hex_str = String::new();
+        for byte in bytes {
+            hex_str.push_str(&format!("{:02X}", byte));
+        }
+        hex_str
+    }
 }
