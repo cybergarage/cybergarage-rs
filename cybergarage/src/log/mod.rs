@@ -14,6 +14,7 @@
 
 pub use self::logger::Logger;
 
-mod hexdump;
+pub mod hexdump;
+
 mod logger;
 mod logger_test;
