@@ -27,8 +27,8 @@ impl Decoder {
         if s.len() == 0 {
             return Ok(vec![]);
         }
-        let split_hexes = s.split(" ");
-        let line_hexes = split_hexes[1..HEXDUMP_TWO_COLUMN_BYTES + 3];
+        let split_hexes: Vec<&str> = s.split(" ").collect();
+        let line_hexes = &split_hexes[1..(HEXDUMP_TWO_COLUMN_BYTES + 3)];
         let mut bytes = vec![];
         for s in line_hexes {
             if s.len() == 0 {
