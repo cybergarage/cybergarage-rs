@@ -33,3 +33,6 @@ doc: format
 
 test: build
 	cargo test -- --test-threads=1
+
+hexdump2bin:
+	cargo run --bin hexdump2bin ${IFILE} ${OFILE}
