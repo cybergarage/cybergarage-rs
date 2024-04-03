@@ -40,7 +40,18 @@ impl Decoder {
                 Err(e) => return Err(ParseError::new(e.to_string().as_str())),
             }
         }
-        Ok(vec![])
+        Ok(bytes.concat())
     }
-    pub fn from_lines(lines: &Vec<&str>) {}
+
+    pub fn from_lines(lines: &Vec<&str>) -> Result<Vec<u8>, Error> {
+        let mut bytes = vec![];
+        for line in lines {
+            let line_bytes = Decoder::from_str(line);
+            match line_bytes {
+                Ok(val) => bytes.push(val),
+                Err(e) => return Err(e),
+            }
+        }
+        Ok(bytes.concat())
+    }
 }
