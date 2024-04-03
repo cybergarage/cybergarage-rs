@@ -20,3 +20,7 @@ nix = "0.25.0"
 net2 = "0.2"
 hex = "0.4"
 pnet = "0.28.0"
+
+[[bin]]
+name = "hexdump2bin"
+path = "bin/hexdump2bin/main.rs"
