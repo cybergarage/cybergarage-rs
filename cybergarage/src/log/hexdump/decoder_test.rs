@@ -14,12 +14,25 @@
 
 #[cfg(test)]
 mod tests {
-
     use crate::log::hexdump::*;
 
     #[test]
     fn decode_from() {
         let log = include_str!("log/hexdump01.log");
-        assert!(Decoder::from_log(log).is_ok());
+        let hexdump_bytes = Decoder::from_log(log);
+        assert!(hexdump_bytes.is_ok());
+        if hexdump_bytes.is_err() {
+            return;
+        }
+
+        let expected_bytes = include_bytes!("log/hexdump01.bin");
+        let hexdump_bytes = hexdump_bytes.unwrap();
+        assert_eq!(expected_bytes.len(), hexdump_bytes.len());
+        if expected_bytes.len() != hexdump_bytes.len() {
+            return;
+        }
+        for n in 0..expected_bytes.len() {
+            assert_eq!(expected_bytes[n], hexdump_bytes[n]);
+        }
     }
 }
