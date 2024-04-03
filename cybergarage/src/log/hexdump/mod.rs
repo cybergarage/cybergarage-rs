@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::decoder::Decoder;
+pub use self::decoder::*;
 pub use self::error::*;
 
 mod decoder;
