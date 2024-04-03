@@ -13,6 +13,11 @@
 // limitations under the License.
 
 use std::env;
+use std::fs;
+use std::fs::File;
+use std::io::Write;
+
+use cybergarage::log::hexdump::Decoder;
 
 fn usages() {
     println!("Usage: hexdump2bin <input hexdump file> <output binary file>");
@@ -22,6 +27,31 @@ fn usages() {
 fn main() {
     if env::args().len() < 2 {
         usages();
+        return;
+    }
+
+    let args: Vec<String> = env::args().collect();
+    let hexdump_filename = &args[1];
+    let hexdump_str = fs::read_to_string(hexdump_filename);
+    if hexdump_str.is_err() {
+        println!("Failed to read the hexdump ({}) file", hexdump_filename);
+        return;
+    }
+
+    let hex_bytes = Decoder::from_log(hexdump_str.unwrap().as_str());
+    if hex_bytes.is_err() {
+        println!("Failed to decode the hexdump ({}) file", hexdump_filename);
+        return;
+    }
+
+    let bin_filename = &args[2];
+    let f = File::create(bin_filename);
+    if f.is_err() {
+        println!("Failed to create the binary file ({})", bin_filename);
+        return;
+    }
+    if f.unwrap().write_all(hex_bytes.unwrap().as_slice()).is_err() {
+        println!("Failed to write the binary file ({})", bin_filename);
         return;
     }
 }
