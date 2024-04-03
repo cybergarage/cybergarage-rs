@@ -13,6 +13,9 @@
 // limitations under the License.
 
 pub use self::decoder::*;
+pub use self::error::*;
 
 mod decoder;
+mod error;
+
 mod decoder_test;
