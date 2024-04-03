@@ -19,9 +19,7 @@ mod tests {
 
     #[test]
     fn decode_from() {
-        let mut buf: [u8; 1] = [0; 1];
-        for n in 0..=0xFF {
-            Decoder::from_bytes(&mut buf);
-        }
+        let log = include_str!("log/hexdump01.log");
+        assert!(Decoder::from_log(log).is_ok());
     }
 }

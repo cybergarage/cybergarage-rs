@@ -54,4 +54,9 @@ impl Decoder {
         }
         Ok(bytes.concat())
     }
+
+    pub fn from_log(log: &str) -> Result<Vec<u8>, Error> {
+        let lines: Vec<&str> = log.split("\n").collect();
+        Decoder::from_lines(&lines)
+    }
 }
