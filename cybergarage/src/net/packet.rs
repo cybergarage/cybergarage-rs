@@ -29,7 +29,7 @@ impl Packet {
         }
     }
 
-    pub fn with(data: Vec<u8>) -> Packet {
+    pub fn from_bytes(data: Vec<u8>) -> Packet {
         Packet {
             data: data.clone(),
             from: SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), 0),
