@@ -1,17 +1,18 @@
 # Changelog
 
-## v1.1.2 (20XX-XX-XX)
-- Add hexdump logger functions
-
+## v1.1.2 (2024-04-23)
+- Added hexdump logger functions
+- Updated net module
+- 
 ## v1.1.1 (2022-12-17)
-- Update Logger
-- Add func!() macro
+- Updated Logger
+- Added func!() macro
 
 ## v1.1.0 (2022-12-17)
-- Add UnicastManager and MulticastManager
+- Added UnicastManager and MulticastManager
 
 ## v1.0.1 (2022-12-02)
-- Add DefaultLogger::init()
+- Added DefaultLogger::init()
 
 ## v1.0.00 (2022-12-02)
 - Initial public release  
