@@ -14,4 +14,3 @@
 
 pub const HEXDUMP_LINE_BYTES: usize = 8;
 pub const HEXDUMP_TWO_COLUMN_BYTES: usize = HEXDUMP_LINE_BYTES * 2;
-pub const HEXDUMP_TWO_COLUMN_ASCII_BYTE_LEN: usize = 77;
