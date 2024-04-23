@@ -100,7 +100,7 @@ impl UnicastServer {
                 match &recv_res {
                     Ok((n_bytes, remote_addr)) => {
                         let recv_msg = &buf[0..*n_bytes];
-                        let mut msg = Packet::from_bytes(recv_msg.to_vec());
+                        let mut msg = Packet::from_bytes(&recv_msg.to_vec());
                         info!(
                             "RECV {} -> {} ({})",
                             remote_addr.ip(),
