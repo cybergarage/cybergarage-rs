@@ -12,19 +12,56 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::io::{Error, ErrorKind};
+pub type Result<T> = std::result::Result<T, Error>;
 
 pub struct ScoketError {}
-pub struct BindError {}
 
 impl ScoketError {
-    pub fn new(msg: &str) -> Error {
-        Error::new(ErrorKind::Other, msg)
+    pub fn new(msg: &str) -> std::io::Error {
+        std::io::Error::new(std::io::ErrorKind::Other, msg)
     }
 }
 
+pub struct BindError {}
+
 impl BindError {
-    pub fn new() -> Error {
+    pub fn new() -> std::io::Error {
         ScoketError::new("socket is not bound")
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Error {
+    pub msg: String,
+}
+
+impl Error {
+    /// from_str creates a new Error with the specified string.
+    pub fn from_str(str: &str) -> Error {
+        Error {
+            msg: str.to_string(),
+        }
+    }
+
+    /// from_string creates a new Error with the specified string.
+    pub fn from_string(str: &String) -> Error {
+        Error { msg: str.clone() }
+    }
+
+    /// message returns the error message.
+    pub fn message(&self) -> &str {
+        &self.msg
+    }
+}
+
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.msg)
+    }
+}
+
+impl std::error::Error for Error {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        None
     }
 }
