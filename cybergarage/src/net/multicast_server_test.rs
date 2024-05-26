@@ -54,7 +54,7 @@ mod tests {
             for _ in 0..TEST_OBSERVER_COUNT {
                 let server_addr = server.ifaddr();
                 assert!(server_addr.is_ok());
-                assert!(server.notify(&pkt));
+                assert!(server.notify(&pkt).is_ok());
                 thread::sleep(time::Duration::from_secs(1));
             }
 

@@ -24,6 +24,7 @@ use crate::net::default::*;
 use crate::net::notifier::*;
 use crate::net::observer::ObserverObject;
 use crate::net::packet::Packet;
+use crate::net::result::Result;
 use crate::net::udp_socket::UdpSocket;
 
 pub struct MulticastServer {
@@ -47,7 +48,7 @@ impl MulticastServer {
         self.notifier.lock().unwrap().add_observer(observer)
     }
 
-    pub fn notify(&self, msg: &Packet) -> bool {
+    pub fn notify(&self, msg: &Packet) -> Result<usize> {
         let to_addr_str = format!("{}:{}", self.maddr, self.port);
         let to_addr: SocketAddr = to_addr_str.parse().unwrap();
         let msg_bytes = msg.bytes();
@@ -60,17 +61,11 @@ impl MulticastServer {
             port,
             msg,
         );
-        if self
-            .socket
-            .read()
-            .unwrap()
-            .send_to(&msg_bytes, to_addr)
-            .is_err()
-        {
+        let ret = self.socket.read().unwrap().send_to(&msg_bytes, to_addr);
+        if ret.is_err() {
             warn!("Couldn't notify Packet to {} {}", addr, port);
-            return false;
         }
-        true
+        ret
     }
 
     pub fn ifaddr(&self) -> io::Result<SocketAddr> {

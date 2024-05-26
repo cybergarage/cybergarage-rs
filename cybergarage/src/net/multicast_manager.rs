@@ -41,7 +41,7 @@ impl MulticastManager {
 
     pub fn notify(&self, msg: &Packet) -> bool {
         for mcast_server in self.mcast_servers.iter() {
-            if !mcast_server.notify(msg) {
+            if !mcast_server.notify(msg).is_err() {
                 return false;
             }
         }
