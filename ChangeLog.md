@@ -1,9 +1,12 @@
 # Changelog
 
+## v1.1.3 (2024-05-26)
+- Update the net module to return a Result type instead of a bool for debugging purposes
+
 ## v1.1.2 (2024-04-23)
 - Added hexdump logger functions
 - Updated net module
-- 
+ 
 ## v1.1.1 (2022-12-17)
 - Updated Logger
 - Added func!() macro
