@@ -80,7 +80,7 @@ impl MulticastManager {
                     if maddr.is_ipv4() {
                         let ret = mcast_server.bind(*maddr, port, ifaddr);
                         if ret.is_err() {
-                            self.stop();
+                            let _ = self.stop();
                             return ret;
                         }
                         break;
@@ -91,7 +91,7 @@ impl MulticastManager {
                     if maddr.is_ipv6() {
                         let ret = mcast_server.bind(*maddr, port, ifaddr);
                         if ret.is_err() {
-                            self.stop();
+                            let _ = self.stop();
                             return ret;
                         }
                         break;
@@ -102,7 +102,7 @@ impl MulticastManager {
             }
             let ret = mcast_server.start();
             if ret.is_err() {
-                self.stop();
+                let _ = self.stop();
                 return ret;
             }
             self.mcast_servers.push(mcast_server);
@@ -110,20 +110,20 @@ impl MulticastManager {
         Ok(())
     }
 
-    pub fn stop(&mut self) -> bool {
-        let mut is_all_server_stopped = true;
+    pub fn stop(&mut self) -> Result<()> {
         for mcast_server in self.mcast_servers.iter_mut() {
-            if !&mcast_server.stop() {
-                is_all_server_stopped = false;
+            let ret = mcast_server.stop();
+            if ret.is_err() {
+                return ret;
             }
         }
         self.mcast_servers.clear();
-        is_all_server_stopped
+        Ok(())
     }
 }
 
 impl Drop for MulticastManager {
     fn drop(&mut self) {
-        self.stop();
+        let _ = self.stop();
     }
 }

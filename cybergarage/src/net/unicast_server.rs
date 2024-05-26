@@ -66,26 +66,30 @@ impl UnicastServer {
         self.socket.read().unwrap().addr()
     }
 
-    pub fn bind(&mut self, ifaddr: IpAddr, port: u16) -> bool {
+    pub fn bind(&mut self, ifaddr: IpAddr, port: u16) -> Result<()> {
         let addr = format!("{}:{}", ifaddr, port).parse();
         if addr.is_err() {
             error!("bind {} {}", ifaddr, port);
-            return false;
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                format!("{}:{}", ifaddr, port),
+            ));
         }
         let addr: SocketAddr = addr.unwrap();
         debug!("BIND UDP {}", addr);
-        if self.socket.write().unwrap().bind(addr).is_err() {
-            return false;
+        let ret = self.socket.write().unwrap().bind(addr);
+        if ret.is_err() {
+            return ret;
         }
-        true
+        Ok(())
     }
 
-    pub fn close(&self) -> bool {
+    pub fn close(&self) -> Result<()> {
         self.socket.read().unwrap().close();
-        true
+        Ok(())
     }
 
-    pub fn start(&mut self) -> bool {
+    pub fn start(&mut self) -> Result<()> {
         let socket = self.socket.clone();
         let notifier = self.notifier.clone();
         thread::spawn(move || {
@@ -116,19 +120,16 @@ impl UnicastServer {
                 }
             }
         });
-        true
+        Ok(())
     }
 
-    pub fn stop(&self) -> bool {
-        if !self.close() {
-            return false;
-        }
-        true
+    pub fn stop(&self) -> Result<()> {
+        self.close()
     }
 }
 
 impl Drop for UnicastServer {
     fn drop(&mut self) {
-        self.stop();
+        let _ = self.stop();
     }
 }

@@ -21,7 +21,7 @@ mod tests {
     #[test]
     fn unicast_manager() {
         let mut mgr = UnicastManager::new();
-        assert!(mgr.start(TEST_PORT));
-        assert!(mgr.stop());
+        assert!(mgr.start(TEST_PORT).is_ok());
+        assert!(mgr.stop().is_ok());
     }
 }

@@ -41,8 +41,8 @@ mod tests {
             let observer = TestNotifyCounter::new(counter.clone());
             assert!(server.add_observer(Arc::new(Mutex::new(observer))));
 
-            assert!(server.bind(ifaddr, TEST_PORT));
-            assert!(server.start());
+            assert!(server.bind(ifaddr, TEST_PORT).is_ok());
+            assert!(server.start().is_ok());
             thread::sleep(time::Duration::from_secs(5));
 
             let mut pkt = Packet::new();
@@ -61,7 +61,7 @@ mod tests {
                 assert!(0 < *counter.unwrap());
             }
 
-            assert!(server.stop());
+            assert!(server.stop().is_ok());
         }
 
         for ifaddr in get_all_interfaces() {

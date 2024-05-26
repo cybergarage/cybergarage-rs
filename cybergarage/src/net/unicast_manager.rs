@@ -17,6 +17,7 @@ use std::net::{IpAddr, SocketAddr};
 use crate::net::interface::*;
 use crate::net::observer::ObserverObject;
 use crate::net::packet::Packet;
+use crate::net::result::Result;
 use crate::net::unicast_server::UnicastServer;
 
 pub struct UnicastManager {
@@ -67,40 +68,42 @@ impl UnicastManager {
         false
     }
 
-    pub fn start(&mut self, port: u16) -> bool {
+    pub fn start(&mut self, port: u16) -> Result<()> {
         if self.is_running() {
-            return true;
+            return Ok(());
         }
 
         for ifaddr in get_all_interfaces() {
             let mut udp_server = UnicastServer::new();
-            if !udp_server.bind(ifaddr, port) {
-                self.stop();
-                return false;
+            let ret = udp_server.bind(ifaddr, port);
+            if ret.is_err() {
+                let _ = self.stop();
+                return ret;
             }
-            if !udp_server.start() {
-                self.stop();
-                return false;
+            let ret = udp_server.start();
+            if ret.is_err() {
+                let _ = self.stop();
+                return ret;
             }
             self.udp_servers.push(udp_server);
         }
-        true
+        Ok(())
     }
 
-    pub fn stop(&mut self) -> bool {
-        let mut is_all_server_stopped = true;
+    pub fn stop(&mut self) -> Result<()> {
         for udp_server in self.udp_servers.iter_mut() {
-            if !&udp_server.stop() {
-                is_all_server_stopped = false;
+            let ret = udp_server.stop();
+            if ret.is_err() {
+                return ret;
             }
         }
         self.udp_servers.clear();
-        is_all_server_stopped
+        Ok(())
     }
 }
 
 impl Drop for UnicastManager {
     fn drop(&mut self) {
-        self.stop();
+        let _ = self.stop();
     }
 }

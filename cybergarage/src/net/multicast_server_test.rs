@@ -69,7 +69,7 @@ mod tests {
                 assert!(0 < *counter.unwrap());
             }
 
-            assert!(server.stop());
+            assert!(server.stop().is_ok());
         }
 
         for ifaddr in get_all_interfaces() {

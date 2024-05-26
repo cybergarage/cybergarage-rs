@@ -95,7 +95,7 @@ impl MulticastServer {
                         .unwrap()
                         .join_multicast_v4(&maddr_v4, &ifaddr_v4);
                     if ret.is_err() {
-                        self.close();
+                        let _ = self.close();
                         return ret;
                     }
                     debug!("BIND MCT {}:{} -> {}:{}", ifaddr, port, maddr_v4, ifaddr_v4);
@@ -115,7 +115,7 @@ impl MulticastServer {
                         .unwrap()
                         .join_multicast_v6(&maddr_v6, &ifaddr_v6);
                     if ret.is_err() {
-                        self.close();
+                        let _ = self.close();
                         return ret;
                     }
                     debug!("BIND MCT {}:{} -> {}:{}", ifaddr, port, maddr_v6, ifaddr_v6);
@@ -127,9 +127,9 @@ impl MulticastServer {
         Ok(())
     }
 
-    pub fn close(&self) -> bool {
+    pub fn close(&self) -> Result<()> {
         self.socket.read().unwrap().close();
-        true
+        Ok(())
     }
 
     pub fn start(&mut self) -> Result<()> {
@@ -166,16 +166,17 @@ impl MulticastServer {
         Ok(())
     }
 
-    pub fn stop(&self) -> bool {
-        if !self.close() {
-            return false;
+    pub fn stop(&self) -> Result<()> {
+        let ret = self.close();
+        if ret.is_err() {
+            return ret;
         }
-        true
+        Ok(())
     }
 }
 
 impl Drop for MulticastServer {
     fn drop(&mut self) {
-        self.stop();
+        let _ = self.stop();
     }
 }
