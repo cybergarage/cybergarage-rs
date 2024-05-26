@@ -50,7 +50,7 @@ mod tests {
                     .is_ok());
             }
 
-            assert!(server.start());
+            assert!(server.start().is_ok());
             thread::sleep(time::Duration::from_secs(5));
 
             let mut pkt = Packet::new();

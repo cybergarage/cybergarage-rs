@@ -132,7 +132,7 @@ impl MulticastServer {
         true
     }
 
-    pub fn start(&mut self) -> bool {
+    pub fn start(&mut self) -> Result<()> {
         let socket = self.socket.clone();
         let notifier = self.notifier.clone();
         thread::spawn(move || {
@@ -163,7 +163,7 @@ impl MulticastServer {
                 }
             }
         });
-        true
+        Ok(())
     }
 
     pub fn stop(&self) -> bool {

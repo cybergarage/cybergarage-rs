@@ -18,6 +18,7 @@ use crate::net::interface::*;
 use crate::net::multicast_server::MulticastServer;
 use crate::net::observer::ObserverObject;
 use crate::net::packet::Packet;
+use crate::net::result::Result;
 
 pub struct MulticastManager {
     mcast_servers: Vec<MulticastServer>,
@@ -67,9 +68,9 @@ impl MulticastManager {
         false
     }
 
-    pub fn start(&mut self, maddrs: &[IpAddr], port: u16) -> bool {
+    pub fn start(&mut self, maddrs: &[IpAddr], port: u16) -> Result<()> {
         if self.is_running() {
-            return true;
+            return Ok(());
         }
 
         for ifaddr in get_all_interfaces() {
@@ -77,9 +78,10 @@ impl MulticastManager {
             if ifaddr.is_ipv4() {
                 for maddr in maddrs {
                     if maddr.is_ipv4() {
-                        if mcast_server.bind(*maddr, port, ifaddr).is_err() {
+                        let ret = mcast_server.bind(*maddr, port, ifaddr);
+                        if ret.is_err() {
                             self.stop();
-                            return false;
+                            return ret;
                         }
                         break;
                     }
@@ -87,26 +89,25 @@ impl MulticastManager {
             } else if ifaddr.is_ipv6() {
                 for maddr in maddrs {
                     if maddr.is_ipv6() {
-                        if mcast_server.bind(*maddr, port, ifaddr).is_err() {
+                        let ret = mcast_server.bind(*maddr, port, ifaddr);
+                        if ret.is_err() {
                             self.stop();
-                            return false;
+                            return ret;
                         }
                         break;
                     }
                 }
             } else {
-                return false;
+                continue;
             }
-            if !mcast_server.is_bound() {
-                return false;
-            }
-            if !mcast_server.start() {
+            let ret = mcast_server.start();
+            if ret.is_err() {
                 self.stop();
-                return false;
+                return ret;
             }
             self.mcast_servers.push(mcast_server);
         }
-        true
+        Ok(())
     }
 
     pub fn stop(&mut self) -> bool {
