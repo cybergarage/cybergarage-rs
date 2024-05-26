@@ -41,9 +41,13 @@ mod tests {
             assert!(server.add_observer(Arc::new(Mutex::new(observer))));
 
             if ifaddr.is_ipv4() {
-                assert!(server.bind(TEST_MULTICAST_V4_ADDRESS, TEST_PORT, ifaddr));
+                assert!(server
+                    .bind(TEST_MULTICAST_V4_ADDRESS, TEST_PORT, ifaddr)
+                    .is_ok());
             } else if ifaddr.is_ipv6() {
-                assert!(server.bind(TEST_MULTICAST_V6_ADDRESS, TEST_PORT, ifaddr));
+                assert!(server
+                    .bind(TEST_MULTICAST_V6_ADDRESS, TEST_PORT, ifaddr)
+                    .is_ok());
             }
 
             assert!(server.start());

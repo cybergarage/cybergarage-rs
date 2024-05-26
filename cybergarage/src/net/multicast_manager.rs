@@ -77,7 +77,7 @@ impl MulticastManager {
             if ifaddr.is_ipv4() {
                 for maddr in maddrs {
                     if maddr.is_ipv4() {
-                        if !mcast_server.bind(*maddr, port, ifaddr) {
+                        if mcast_server.bind(*maddr, port, ifaddr).is_err() {
                             self.stop();
                             return false;
                         }
@@ -87,7 +87,7 @@ impl MulticastManager {
             } else if ifaddr.is_ipv6() {
                 for maddr in maddrs {
                     if maddr.is_ipv6() {
-                        if !mcast_server.bind(*maddr, port, ifaddr) {
+                        if mcast_server.bind(*maddr, port, ifaddr).is_err() {
                             self.stop();
                             return false;
                         }

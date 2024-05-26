@@ -76,50 +76,47 @@ impl MulticastServer {
         self.socket.read().unwrap().addr().is_ok()
     }
 
-    pub fn bind(&mut self, maddr: IpAddr, port: u16, ifaddr: IpAddr) -> bool {
+    pub fn bind(&mut self, maddr: IpAddr, port: u16, ifaddr: IpAddr) -> Result<()> {
         let mut addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)), port);
         if ifaddr.is_ipv6() {
             addr = SocketAddr::new(IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0)), port);
         }
         debug!("BIND MCT {}", addr);
-        if self.socket.write().unwrap().bind(addr).is_err() {
-            return false;
+        let ret = self.socket.write().unwrap().bind(addr);
+        if ret.is_err() {
+            return ret;
         }
         match ifaddr {
             IpAddr::V4(ifaddr_v4) => match maddr {
                 IpAddr::V4(maddr_v4) => {
-                    if self
+                    let ret = self
                         .socket
                         .write()
                         .unwrap()
-                        .join_multicast_v4(&maddr_v4, &ifaddr_v4)
-                        .is_err()
-                    {
+                        .join_multicast_v4(&maddr_v4, &ifaddr_v4);
+                    if ret.is_err() {
                         self.close();
-                        return false;
+                        return ret;
                     }
                     debug!("BIND MCT {}:{} -> {}:{}", ifaddr, port, maddr_v4, ifaddr_v4);
                 }
                 IpAddr::V6(maddr_v6) => {
                     error!("BIND MCT {}:{} -> {}:{}", ifaddr, port, maddr_v6, ifaddr_v4);
-                    return false;
                 }
             },
             IpAddr::V6(ifaddr_v6) => match maddr {
                 IpAddr::V4(maddr_v4) => {
                     error!("BIND MCT {}:{} -> {}:{}", ifaddr, port, maddr_v4, ifaddr_v6);
-                    return false;
                 }
                 IpAddr::V6(maddr_v6) => {
-                    if self
+                    let ret = self
                         .socket
                         .write()
                         .unwrap()
-                        .join_multicast_v6(&maddr_v6, &ifaddr_v6)
-                        .is_err()
-                    {
+                        .join_multicast_v6(&maddr_v6, &ifaddr_v6);
+                    if ret.is_err() {
                         self.close();
-                        return false;
+                        return ret;
                     }
                     debug!("BIND MCT {}:{} -> {}:{}", ifaddr, port, maddr_v6, ifaddr_v6);
                 }
@@ -127,7 +124,7 @@ impl MulticastServer {
         }
         self.maddr = maddr;
         self.port = port;
-        true
+        Ok(())
     }
 
     pub fn close(&self) -> bool {
