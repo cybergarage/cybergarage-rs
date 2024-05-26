@@ -24,6 +24,7 @@ use crate::net::default::*;
 use crate::net::notifier::*;
 use crate::net::observer::ObserverObject;
 use crate::net::packet::Packet;
+use crate::net::result::Result;
 use crate::net::udp_socket::UdpSocket;
 
 pub struct UnicastServer {
@@ -43,7 +44,7 @@ impl UnicastServer {
         self.notifier.lock().unwrap().add_observer(observer)
     }
 
-    pub fn send(&self, to_addr: SocketAddr, msg: &Packet) -> bool {
+    pub fn send(&self, to_addr: SocketAddr, msg: &Packet) -> Result<usize> {
         let msg_bytes = msg.bytes();
         let addr = to_addr.ip();
         let port = to_addr.port();
@@ -54,17 +55,11 @@ impl UnicastServer {
             port,
             msg,
         );
-        if self
-            .socket
-            .read()
-            .unwrap()
-            .send_to(&msg_bytes, to_addr)
-            .is_err()
-        {
+        let ret = self.socket.read().unwrap().send_to(&msg_bytes, to_addr);
+        if ret.is_err() {
             warn!("Couldn't send Packet to {} {}", addr, port);
-            return false;
         }
-        true
+        ret
     }
 
     pub fn ifaddr(&self) -> io::Result<SocketAddr> {

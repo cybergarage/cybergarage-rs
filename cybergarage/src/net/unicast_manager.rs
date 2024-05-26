@@ -41,7 +41,7 @@ impl UnicastManager {
 
     pub fn send(&self, to_addr: SocketAddr, msg: &Packet) -> bool {
         for udp_server in self.udp_servers.iter() {
-            if udp_server.send(to_addr, msg) {
+            if udp_server.send(to_addr, msg).is_err() {
                 return true;
             }
         }
