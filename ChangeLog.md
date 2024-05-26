@@ -1,7 +1,10 @@
 # Changelog
 
+## v1.1.4 (2024-05-26)
+- Fixed the net module to return a Result type instead of a bool for debugging purposes
+
 ## v1.1.3 (2024-05-26)
-- Update the net module to return a Result type instead of a bool for debugging purposes
+- Updated the net module to return a Result type instead of a bool for debugging purposes
 
 ## v1.1.2 (2024-04-23)
 - Added hexdump logger functions
