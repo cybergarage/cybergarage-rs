@@ -23,8 +23,8 @@ mod tests {
         let maddrs = vec![TEST_MULTICAST_V4_ADDRESS, TEST_MULTICAST_V6_ADDRESS];
         let mut mgr = MulticastManager::new();
         let ret = mgr.start(&maddrs, TEST_PORT);
-        assert!(ret.is_ok());
+        assert!(ret.is_ok(), "{}", ret.err().unwrap());
         let ret = mgr.stop();
-        assert!(ret.is_ok());
+        assert!(ret.is_ok(), "{}", ret.err().unwrap());
     }
 }
