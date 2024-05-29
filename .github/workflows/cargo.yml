@@ -16,7 +16,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build
-      run: pushd cybergarage && cargo build --verbose && popd
     - name: Run tests
       run: env RUST_BACKTRACE=1 pushd cybergarage && cargo test --verbose && popd
