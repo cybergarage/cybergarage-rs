@@ -40,13 +40,14 @@ impl MulticastManager {
         true
     }
 
-    pub fn notify(&self, msg: &Packet) -> bool {
+    pub fn notify(&self, msg: &Packet) -> Result<()> {
         for mcast_server in self.mcast_servers.iter() {
-            if !mcast_server.notify(msg).is_err() {
-                return false;
+            let res = mcast_server.notify(msg);
+            if res.is_err() {
+                return Err(res.err().unwrap());
             }
         }
-        true
+        Ok(())
     }
 
     pub fn is_running(&self) -> bool {
