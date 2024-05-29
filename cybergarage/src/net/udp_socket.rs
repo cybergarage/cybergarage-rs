@@ -17,6 +17,8 @@
 use crate::net::error::{BindError, ScoketError};
 use crate::net::result::Result;
 use log::warn;
+use net2::unix::UnixUdpBuilderExt;
+use net2::UdpBuilder;
 use nix::sys::socket::{shutdown, Shutdown};
 use nix::unistd::close;
 use std::io;
@@ -30,16 +32,16 @@ pub struct UdpSocket {
 }
 
 fn create_socket_v4(ifaddr: SocketAddr) -> io::Result<std::net::UdpSocket> {
-    net2::UdpBuilder::new_v4()?
+    UdpBuilder::new_v4()?
         .reuse_address(true)?
-        // .reuse_port(true)?
+        .reuse_port(true)?
         .bind(ifaddr)
 }
 
 fn create_socket_v6(ifaddr: SocketAddr) -> io::Result<std::net::UdpSocket> {
-    net2::UdpBuilder::new_v6()?
+    UdpBuilder::new_v6()?
         .reuse_address(true)?
-        // .reuse_port(true)?
+        .reuse_port(true)?
         .bind(ifaddr)
 }
 
