@@ -41,7 +41,8 @@ mod tests {
             let observer = TestNotifyCounter::new(counter.clone());
             assert!(server.add_observer(Arc::new(Mutex::new(observer))));
 
-            assert!(server.bind(ifaddr, TEST_PORT).is_ok());
+            let ret = server.bind(ifaddr, TEST_PORT);
+            assert!(ret.is_ok(), "{:?}", ret);
             assert!(server.start().is_ok());
             thread::sleep(time::Duration::from_secs(5));
 
@@ -50,7 +51,8 @@ mod tests {
             for _ in 0..TEST_OBSERVER_COUNT {
                 let server_addr = server.ifaddr();
                 assert!(server_addr.is_ok());
-                assert!(server.send(server_addr.unwrap(), &pkt).is_ok());
+                let ret = server.send(server_addr.unwrap(), &pkt);
+                assert!(ret.is_ok(), "{:?}", ret);
                 thread::sleep(time::Duration::from_secs(1));
             }
 
