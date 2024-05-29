@@ -1,7 +1,10 @@
 # Changelog
 
-## v1.1.4 (2024-05-29)
-- Update UdpSocket to set SO_REUSEPORT for macOS 
+## v1.1.6 (2024-05-29)
+- Fixed MulticastManager::notify()
+
+## v1.1.5 (2024-05-29)
+- Updated UdpSocket to set SO_REUSEPORT for macOS 
 
 ## v1.1.4 (2024-05-26)
 - Fixed the net module to return a Result type instead of a bool for debugging purposes
