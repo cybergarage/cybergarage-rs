@@ -19,4 +19,7 @@ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 pub const TEST_MULTICAST_V4_ADDRESS: IpAddr = std::net::IpAddr::V4(Ipv4Addr::new(224, 0, 23, 0));
 pub const TEST_MULTICAST_V6_ADDRESS: IpAddr =
     std::net::IpAddr::V6(Ipv6Addr::new(0xff, 0x02, 0, 0, 0, 0, 0, 1));
-pub const TEST_PORT: u16 = 3610;
+pub const ECHONET_PORT: u16 = 3610;
+pub const MDNST_PORT: u16 = 5353;
+pub const TEST_PORT: u16 = MDNST_PORT;
+pub const TEST_PORTS: [u16; 2] = [ECHONET_PORT, MDNST_PORT];
