@@ -15,11 +15,14 @@
 #[cfg(test)]
 mod tests {
 
+    use crate::log::Logger;
     use crate::net::default_test::*;
     use crate::net::multicast_manager::*;
 
     #[test]
     fn multicast_manager() {
+        Logger::init();
+
         let maddrs = vec![TEST_MULTICAST_V4_ADDRESS, TEST_MULTICAST_V6_ADDRESS];
         let mut mgr = MulticastManager::new();
         let ret = mgr.start(&maddrs, TEST_PORT);
