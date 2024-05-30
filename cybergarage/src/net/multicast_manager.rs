@@ -89,7 +89,7 @@ impl MulticastManager {
                         return ret;
                     }
                     info!(
-                        "Bind {}:{} to {}",
+                        "BIND {}:{} to {}",
                         maddr.to_string(),
                         port,
                         ifaddr.to_string()
@@ -106,7 +106,7 @@ impl MulticastManager {
                         return ret;
                     }
                     info!(
-                        "Bind {}:{} to {}",
+                        "BIND {}:{} to {}",
                         maddr.to_string(),
                         port,
                         ifaddr.to_string()
