@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use log::*;
 use std::net::IpAddr;
 
 use crate::net::interface::*;
@@ -78,25 +79,38 @@ impl MulticastManager {
             let mut mcast_server = MulticastServer::new();
             if ifaddr.is_ipv4() {
                 for maddr in maddrs {
-                    if maddr.is_ipv4() {
-                        let ret = mcast_server.bind(*maddr, port, ifaddr);
-                        if ret.is_err() {
-                            let _ = self.stop();
-                            return ret;
-                        }
-                        break;
+                    if !maddr.is_ipv4() {
+                        continue;
                     }
+
+                    let ret = mcast_server.bind(*maddr, port, ifaddr);
+                    if ret.is_err() {
+                        let _ = self.stop();
+                        return ret;
+                    }
+                    info!(
+                        "Bind {}:{} to {}",
+                        maddr.to_string(),
+                        port,
+                        ifaddr.to_string()
+                    );
                 }
             } else if ifaddr.is_ipv6() {
                 for maddr in maddrs {
-                    if maddr.is_ipv6() {
-                        let ret = mcast_server.bind(*maddr, port, ifaddr);
-                        if ret.is_err() {
-                            let _ = self.stop();
-                            return ret;
-                        }
-                        break;
+                    if !maddr.is_ipv6() {
+                        continue;
                     }
+                    let ret = mcast_server.bind(*maddr, port, ifaddr);
+                    if ret.is_err() {
+                        let _ = self.stop();
+                        return ret;
+                    }
+                    info!(
+                        "Bind {}:{} to {}",
+                        maddr.to_string(),
+                        port,
+                        ifaddr.to_string()
+                    );
                 }
             } else {
                 continue;
